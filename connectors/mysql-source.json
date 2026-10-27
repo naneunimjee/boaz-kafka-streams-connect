@@ -1,0 +1,30 @@
+{
+  "name": "mysql-orders-source",
+  "config": {
+    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+    "tasks.max": "1",
+
+    "database.hostname": "mysql",
+    "database.port": "3306",
+    "database.user": "debezium",
+    "database.password": "dbz",
+    "database.server.id": "184054",
+
+    "topic.prefix": "shop",
+    "database.include.list": "shop",
+    "table.include.list": "shop.orders",
+
+    "schema.history.internal.kafka.bootstrap.servers": "kafka:29092",
+    "schema.history.internal.kafka.topic": "schema-history.shop",
+
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false",
+
+    "transforms": "route",
+    "transforms.route.type": "org.apache.kafka.connect.transforms.RegexRouter",
+    "transforms.route.regex": "shop\\.shop\\.orders",
+    "transforms.route.replacement": "orders.raw"
+  }
+}
