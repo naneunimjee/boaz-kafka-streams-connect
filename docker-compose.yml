@@ -9,7 +9,7 @@ services:
     image: apache/kafka:3.9.0
     container_name: kafka
     ports:
-      - "9092:9092"          # 내 PC(파이썬 스크립트)에서 접속할 때: localhost:9092
+      - "127.0.0.1:9092:9092"          # 내 PC(파이썬 스크립트)에서 접속할 때: localhost:9092
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
@@ -39,7 +39,7 @@ services:
     image: kafbat/kafka-ui:v1.1.0
     container_name: kafka-ui
     ports:
-      - "8080:8080"          # 브라우저에서 http://localhost:8080
+      - "127.0.0.1:8080:8080"          # 브라우저에서 http://localhost:8080
     environment:
       KAFKA_CLUSTERS_0_NAME: boaz-local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
@@ -51,10 +51,10 @@ services:
         condition: service_healthy
 
   mysql:
-    image: mysql:8.0
+    image: mysql:8.0.46
     container_name: mysql
     ports:
-      - "3307:3306"          # 내 PC에 MySQL이 이미 깔려 있어도 안 겹치게 3307
+      - "127.0.0.1:3307:3306"          # 내 PC에 MySQL이 이미 깔려 있어도 안 겹치게 3307
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: shop
@@ -79,7 +79,7 @@ services:
     image: quay.io/debezium/connect:2.7.3.Final
     container_name: connect
     ports:
-      - "8083:8083"          # Connector 등록용 REST API
+      - "127.0.0.1:8083:8083"          # Connector 등록용 REST API
     environment:
       BOOTSTRAP_SERVERS: kafka:29092
       GROUP_ID: connect-cluster        # Distributed 모드: 같은 GROUP_ID의 Worker끼리 일을 나눔
