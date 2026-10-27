@@ -59,18 +59,20 @@ def create_order(cur, order_id):
         "VALUES (%s, %s, %s, %s, 'CREATED')",
         (order_id, customer_id, product_id, amount),
     )
-    print(f"[주문 생성] #{order_id} {customer_id} → {product_id} {amount:,}원")
+    print(f"🛒 주문   #{order_id:<4} {customer_id}  {product_id:<9} {amount:>9,}원")
 
 
 def update_status(cur, order_id, status):
     cur.execute("UPDATE orders SET status=%s WHERE order_id=%s", (status, order_id))
-    icon = "결제" if status == "PAID" else "취소"
-    print(f"[{icon}]     #{order_id} → {status}")
+    if status == "PAID":
+        print(f"💳 결제   #{order_id:<4} → PAID")
+    else:
+        print(f"❌ 취소   #{order_id:<4} → CANCELLED")
 
 
 def main():
     parser = argparse.ArgumentParser(description="주문 데이터 자동 생성기")
-    parser.add_argument("--interval", type=float, default=2.0, help="한 번 움직이는 간격(초), 기본 2초")
+    parser.add_argument("--interval", type=float, default=1.5, help="한 번 움직이는 간격(초), 기본 1.5초")
     parser.add_argument("--max-orders", type=int, default=0, help="만들 주문 수 (0이면 Ctrl+C 할 때까지 계속)")
     parser.add_argument("--seed", type=int, default=None, help="같은 숫자를 주면 매번 같은 순서로 생성")
     args = parser.parse_args()
@@ -84,12 +86,12 @@ def main():
     created = 0
     open_orders = {}  # 아직 끝나지 않은 주문: {order_id: 현재 상태}
 
-    print(f"생성기 시작 (간격 {args.interval}초, 주문 번호 #{order_id}부터) — 멈추려면 Ctrl + C")
+    print(f"🚀 주문 생성기 시작 (간격 {args.interval}초, 주문 번호 #{order_id}부터) — 멈추려면 Ctrl + C\n")
     try:
         while True:
             can_create = args.max_orders == 0 or created < args.max_orders
             if not can_create and not open_orders:
-                print("지정한 주문을 모두 처리했어요. 종료합니다.")
+                print("\n✅ 지정한 주문을 모두 처리했어요. 종료합니다.")
                 break
 
             # 열린 주문이 있으면 절반 확률로 그중 하나의 상태를 바꾸고, 아니면 새 주문 생성
@@ -116,7 +118,7 @@ def main():
 
             time.sleep(args.interval)
     except KeyboardInterrupt:
-        print("\n생성기를 멈췄어요.")
+        print("\n🛑 생성기를 멈췄어요.")
     finally:
         conn.close()
 
