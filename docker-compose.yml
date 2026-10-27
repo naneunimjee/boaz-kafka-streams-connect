@@ -2,7 +2,7 @@
 # 구성: Kafka(KRaft) + Kafka UI + MySQL + Kafka Connect(Debezium) + 파이썬 Streams 앱
 #
 # 데이터 흐름:
-#   MySQL(orders) ─Debezium Source─▶ orders.raw ─파이썬 Streams─▶ 결과 토픽 ─JDBC Sink─▶ MySQL(sales_summary)
+#   MySQL(orders) ─Debezium Source─▶ orders.raw ─파이썬 Streams─▶ 결과 토픽 ─JDBC Sink─▶ MySQL(product_order_counts)
 
 services:
   kafka:
@@ -114,7 +114,7 @@ services:
     environment:
       KAFKA_BROKER: kafka:29092
       PYTHONUNBUFFERED: "1"   # print 결과가 바로바로 화면에 나오게
-      PYTHONPATH: /app        # solutions/ 안의 코드에서도 lab_common을 import할 수 있게
+      PYTHONPATH: /app        # 어느 폴더에서 실행해도 lab_common을 import할 수 있게
     depends_on:
       kafka:
         condition: service_healthy
