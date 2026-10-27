@@ -24,7 +24,7 @@ app = Application(
 )
 
 orders_raw = app.topic("orders.raw", key_deserializer="json", value_deserializer="json")
-counts_topic = app.topic("product-order-counts.quix", key_serializer="str", value_serializer="json")
+counts_topic = app.topic("product-order-counts", key_serializer="str", value_serializer="json")
 
 sdf = app.dataframe(orders_raw)
 
@@ -46,6 +46,26 @@ def count_orders(order: dict, state: State) -> dict:
 sdf = sdf.apply(count_orders, stateful=True)
 
 sdf = sdf.update(lambda r: print(f"⚡ Quix      │ {r['product_id']:<9} +1 → 누적 {r['order_count']:>3}건"))
+
+
+# 4) 결과를 Kafka Connect가 읽을 수 있는 "Schema + 값" 형식으로 감싸서 내보내기
+#    → 4번 실습에서 JDBC Sink가 이 Schema를 보고 MySQL 테이블 컬럼을 만듦 (이론 3.4 Schema)
+def with_schema(r: dict) -> dict:
+    return {
+        "schema": {
+            "type": "struct",
+            "name": "product_order_count",
+            "optional": False,
+            "fields": [
+                {"field": "product_id", "type": "string", "optional": False},
+                {"field": "order_count", "type": "int64", "optional": False},
+            ],
+        },
+        "payload": {"product_id": r["product_id"], "order_count": r["order_count"]},
+    }
+
+
+sdf = sdf.apply(with_schema)
 sdf.to_topic(counts_topic)
 
 if __name__ == "__main__":
