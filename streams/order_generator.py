@@ -72,7 +72,7 @@ def update_status(cur, order_id, status):
 
 def main():
     parser = argparse.ArgumentParser(description="주문 데이터 자동 생성기")
-    parser.add_argument("--interval", type=float, default=1.5, help="한 번 움직이는 간격(초), 기본 1초")
+    parser.add_argument("--interval", type=float, default=1.5, help="한 번 움직이는 간격(초), 기본 1.5초")
     parser.add_argument("--max-orders", type=int, default=0, help="만들 주문 수 (0이면 Ctrl+C 할 때까지 계속)")
     parser.add_argument("--seed", type=int, default=None, help="같은 숫자를 주면 매번 같은 순서로 생성")
     args = parser.parse_args()
