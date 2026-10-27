@@ -15,3 +15,6 @@ venv/
 Thumbs.db
 .vscode/
 .idea/
+
+# Quix Streams 상태 저장 폴더 (State Store, 실행하면 자동 생성)
+streams/state/
