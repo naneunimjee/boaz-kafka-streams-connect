@@ -1,0 +1,17 @@
+# 민감정보 (API 키 등은 .env에만 넣고 커밋하지 않기)
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 로그
+*.log
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
