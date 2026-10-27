@@ -114,7 +114,10 @@ services:
     environment:
       KAFKA_BROKER: kafka:29092
       PYTHONUNBUFFERED: "1"   # print 결과가 바로바로 화면에 나오게
+      PYTHONPATH: /app        # solutions/ 안의 코드에서도 lab_common을 import할 수 있게
     depends_on:
       kafka:
         condition: service_healthy
+      mysql:
+        condition: service_healthy   # 주문 생성기가 MySQL에 접속하므로
     profiles: ["streams"]

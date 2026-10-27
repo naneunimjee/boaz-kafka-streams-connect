@@ -6,12 +6,14 @@ Step 2-1. Stateless 처리 (filter / apply)
 - 처리: 변경 후 상태(after)만 꺼내고 → 20,000원 이상 주문만 통과
 - 출력: 화면에 출력 (+ orders.filtered 토픽에 저장)
 """
-import os
-
 from quixstreams import Application
 
+from lab_common import BROKER, check_input_topic
+
+check_input_topic("orders.raw")  # 토픽이 없으면 Connector 등록하라고 안내하고 종료
+
 app = Application(
-    broker_address=os.getenv("KAFKA_BROKER", "kafka:29092"),
+    broker_address=BROKER,
     consumer_group="step2-1-filter",
     auto_offset_reset="earliest",  # 처음 실행할 때 토픽의 맨 처음부터 읽기
 )

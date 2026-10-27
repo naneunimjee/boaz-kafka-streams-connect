@@ -1,5 +1,7 @@
 # Quix Streams 3.28.1과 의존성 전체 버전 고정 (Windows/macOS, amd64/arm64 동일)
 quixstreams==3.28.1
+# 주문 생성기(order_generator.py)용 MySQL 드라이버
+pymysql==1.2.3
 annotated_types==0.8.0
 anyio==4.15.1
 attrs==26.1.0
