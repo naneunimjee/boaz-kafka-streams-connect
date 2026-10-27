@@ -1,5 +1,5 @@
 # BOAZ Kafka Streams & Connect 실습
-# 구성: Kafka(KRaft) + Kafka UI + MySQL + Kafka Connect(Debezium)
+# 구성: Kafka(KRaft) + Kafka UI + MySQL + Kafka Connect(Debezium) + 파이썬 Streams 앱
 #
 # 데이터 흐름:
 #   MySQL(orders) ─Debezium Source─▶ orders.raw ─파이썬 Streams─▶ 결과 토픽 ─JDBC Sink─▶ MySQL(sales_summary)
@@ -7,6 +7,7 @@
 services:
   kafka:
     image: apache/kafka:3.9.0
+    hostname: kafka          # 공식 single-node 예제와 동일하게 hostname 지정
     container_name: kafka
     ports:
       - "127.0.0.1:9092:9092"          # 내 PC(파이썬 스크립트)에서 접속할 때: localhost:9092
@@ -27,8 +28,6 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       # 토픽 자동 생성 시 기본 파티션 3개 (Task/Partition 실습용)
       KAFKA_NUM_PARTITIONS: 3
-      # 노트북 메모리 절약 (기본 1GB → 512MB)
-      KAFKA_HEAP_OPTS: "-Xms256m -Xmx512m"
     healthcheck:
       test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list"]
       interval: 10s
@@ -101,3 +100,24 @@ services:
       interval: 10s
       timeout: 5s
       retries: 20
+
+  # 파이썬 Streams 앱 (Quix Streams)
+  # - profiles 때문에 `docker compose up -d` 할 때는 안 뜨고,
+  #   `docker compose run --rm streams python <파일>` 로 실행할 때만 뜸
+  # - ./streams 폴더를 그대로 연결해서, 코드 고치면 다시 빌드 없이 바로 반영됨
+  streams:
+    build: ./streams
+    image: boaz-streams:3.28.1
+    working_dir: /app
+    volumes:
+      - ./streams:/app
+    environment:
+      KAFKA_BROKER: kafka:29092
+      PYTHONUNBUFFERED: "1"   # print 결과가 바로바로 화면에 나오게
+      PYTHONPATH: /app        # solutions/ 안의 코드에서도 lab_common을 import할 수 있게
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy   # 주문 생성기가 MySQL에 접속하므로
+    profiles: ["streams"]
