@@ -46,8 +46,11 @@ def count_orders(order: dict, state: State) -> dict:
 
 sdf = sdf.apply(count_orders, stateful=True)
 
-sdf.print()
+sdf = sdf.update(lambda r: print(f"⚡ Quix      │ {r['product_id']:<9} +1 → 누적 {r['order_count']:>3}건"))
 sdf.to_topic(counts_topic)
 
 if __name__ == "__main__":
+    print("⚡ [Quix] 상품별 주문 수 집계 시작")
+    print("   State 저장 위치: RocksDB(streams/state) + Kafka changelog 토픽 — 멈추기: Ctrl + C\n")
     app.run()
+    print("\n🛑 멈췄어요. count는 State Store에 저장돼 있어요 → 다시 켜면 이어서 셉니다!")

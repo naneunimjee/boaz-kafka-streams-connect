@@ -33,7 +33,8 @@ consumer.subscribe([INPUT_TOPIC])
 # ★ State Store 역할: 상품별 주문 수를 "메모리"에 저장 (프로그램 끄면 사라짐!)
 state_store = defaultdict(int)
 
-print("[직접 구현] 상품별 주문 수 집계 시작... (멈추기: Ctrl + C)")
+print("🧮 [직접 구현] 상품별 주문 수 집계 시작")
+print("   State 저장 위치: 파이썬 dict (메모리) — 멈추기: Ctrl + C\n")
 try:
     while True:
         msg = consumer.poll(1.0)
@@ -58,11 +59,9 @@ try:
         producer.produce(OUTPUT_TOPIC, key=product, value=json.dumps(result))
         producer.poll(0)
 
-        print("\n--- 상품별 주문 수 (직접 구현) ---")
-        for p, cnt in sorted(state_store.items(), key=lambda x: -x[1]):
-            print(f"  {p:<10} {cnt}건")
+        print(f"🧮 직접 구현 │ {product:<9} +1 → 누적 {state_store[product]:>3}건")
 except KeyboardInterrupt:
-    print("\n멈췄어요. (dict에 있던 count는 이제 사라졌습니다)")
+    print("\n🛑 멈췄어요. dict에 있던 count는 사라졌어요 → 다시 켜면 1건부터 다시 셉니다!")
 finally:
     producer.flush()
     consumer.close()
