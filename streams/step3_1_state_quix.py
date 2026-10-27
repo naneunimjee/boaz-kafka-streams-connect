@@ -38,9 +38,8 @@ sdf = sdf.group_by("product_id")
 
 # 3) 상품별 count (State는 지금 메시지의 Key = 상품별로 따로 저장됨)
 def count_orders(order: dict, state: State) -> dict:
-    # TODO: state에서 "order_count"를 꺼내서(없으면 0) +1 하고, 다시 state에 저장하기
-    #   힌트: state.get("키", 기본값) / state.set("키", 값)
-    count = 0  # ← 고쳐보세요
+    count = state.get("order_count", 0) + 1
+    state.set("order_count", count)
     return {"product_id": order["product_id"], "order_count": count}
 
 

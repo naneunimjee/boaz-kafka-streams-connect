@@ -52,8 +52,8 @@ try:
             continue
         product = event["after"]["product_id"]
 
-        # ★ TODO: 이 상품의 count를 1 늘리기 (state_store는 {상품: 주문수} 형태의 dict)
-        pass  # ← 이 줄을 지우고 한 줄로 작성해보세요
+        # ★ 핵심: 이전 count를 꺼내서 +1 하고 다시 저장
+        state_store[product] += 1
 
         result = {"product_id": product, "order_count": state_store[product]}
         producer.produce(OUTPUT_TOPIC, key=product, value=json.dumps(result))

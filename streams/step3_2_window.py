@@ -11,7 +11,7 @@
   📦 창이 닫히면 그 창의 최종 주문 수
 
 실행 순서:
-  터미널 1: docker compose run --rm streams python solutions/step3_2_window.py
+  터미널 1: docker compose run --rm streams python step3_2_window.py
   터미널 2: docker compose run --rm streams python step3_2_late_events.py
 """
 from datetime import datetime, timedelta, timezone
@@ -24,10 +24,9 @@ from lab_common import BROKER
 KST = timezone(timedelta(hours=9))
 LATE_SEC = 2  # 이 이상 늦게 온 이벤트를 "지각"으로 표시
 
-# TODO: 10초짜리 Tumbling Window, Grace Period 3초로 설정하기
-#   힌트: timedelta(seconds=...)
-WINDOW_SIZE = timedelta(seconds=1)  # ← 고쳐보세요
-GRACE = timedelta(seconds=0)        # ← 고쳐보세요
+# 10초 Tumbling Window + Grace Period 3초
+WINDOW_SIZE = timedelta(seconds=10)
+GRACE = timedelta(seconds=3)
 
 app = Application(
     broker_address=BROKER,
