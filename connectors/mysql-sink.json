@@ -10,7 +10,7 @@
     "connection.password": "boaz",
 
     "insert.mode": "upsert",
-    "primary.key.mode": "record_key",
+    "primary.key.mode": "record_value",
     "primary.key.fields": "product_id",
     "schema.evolution": "basic",
     "table.name.format": "product_order_counts",
