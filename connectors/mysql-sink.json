@@ -1,0 +1,22 @@
+{
+  "name": "mysql-counts-sink",
+  "config": {
+    "connector.class": "io.debezium.connector.jdbc.JdbcSinkConnector",
+    "tasks.max": "1",
+    "topics": "product-order-counts",
+
+    "connection.url": "jdbc:mysql://mysql:3306/shop",
+    "connection.username": "boaz",
+    "connection.password": "boaz",
+
+    "insert.mode": "upsert",
+    "primary.key.mode": "record_key",
+    "primary.key.fields": "product_id",
+    "schema.evolution": "basic",
+    "table.name.format": "product_order_counts",
+
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "true"
+  }
+}
